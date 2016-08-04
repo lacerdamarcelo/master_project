@@ -1,0 +1,110 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CRUD com Bootstrap 3</title>
+    <link href="{% static 'formulario_vistoria/css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="{% static 'formulario_vistoria/js/jquery.min.js' %}"></script>
+    <link href="{% static 'formulario_vistoria/css/fileinput.min.css' %}" media="all" rel="stylesheet" type="text/css" />
+    <script src="{% static 'formulario_vistoria/js/fileinput.min.js' %}"></script>
+</head>
+<body>
+     <nav class="navbar navbar-inverse navbar-fixed-top">
+     <div class="container-fluid">
+      <div class="navbar-header">
+       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+       </button>
+       <a class="navbar-brand" href="#">Web Dev Academy</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+       <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Início</a></li>
+        <li><a href="#">Opções</a></li>
+        <li><a href="#">Perfil</a></li>
+        <li><a href="#">Ajuda</a></li>
+       </ul>
+      </div>
+     </div>
+    </nav>
+    <br>
+    <div id="main" class="container-fluid">
+     <h3 class="page-header">Cadastro</h3>
+     <form action="{% url 'user_management:salvar_usuario' %}" method="post">
+        {% csrf_token %}
+        <!-- area de campos do form -->
+        <div class="row">
+         <div class="form-group col-md-4">
+           <label for="nome">Nome: </label>
+           <input type="text" class="form-control" name="nome">
+         </div>
+        </div>
+        <div class="row">
+         <div class="form-group col-md-4">
+           <label for="sobrenome">Sobrenome: </label>
+           <input type="text" class="form-control" name="sobrenome">
+         </div>
+        </div>
+        <div class="row">
+         <div class="form-group col-md-4">
+           <label for="email">E-Mail: </label>
+           <input type="text" class="form-control" name="email">
+         </div>
+        </div>
+        <div class="row">
+         <div class="form-group col-md-4">
+           <label for="user">Nome de Usuário: </label>
+           <input type="text" class="form-control" name="user">
+         </div>
+        </div>
+        <div class="row">
+         <div class="form-group col-md-4">
+           <label for="senha">Senha: </label>
+           <input type="password" class="form-control" name="senha">
+         </div>
+        </div>
+        <div class="row">
+         <div class="form-group col-md-4">
+           <label for="conf_senha">Confirmação da senha: </label>
+           <input type="password" class="form-control" name="conf_senha">
+         </div>
+        </div>
+        <hr />
+        <div id="actions" class="row">
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="/login/" class="btn btn-default">Cancelar</a>
+          </div>
+        </div>
+     </form>
+    </div>
+    <script src="{% static 'formulario_vistoria/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'formulario_vistoria/js/moment.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#foto-upload").fileinput({
+                maxFileSize: 500,
+                previewTemplates: true,
+                uploadUrl: "{% url 'formulario_vistoria:foto_upload' %}"
+            });
+            $('#datetimepicker1').datetimepicker({format: 'YYYY-MM-DD'});
+            $('#datetimepicker2').datetimepicker({format: 'YYYY-MM-DD'});
+            $('#datetimepicker3').datetimepicker({format: 'YYYY-MM-DD'});
+            $('#datetimepicker4').datetimepicker({format: 'YYYY-MM-DD'});
+            $('#datetimepicker5').datetimepicker({format: 'YYYY-MM-DD'});
+            $('#datetimepicker6').datetimepicker({format: 'YYYY-MM-DD'});
+            $('#datetimepicker7').datetimepicker({format: 'YYYY-MM-DD'});
+            $('#datetimepicker8').datetimepicker({format: 'YYYY-MM-DD'});
+            $('#datetimepicker9').datetimepicker({format: 'YYYY-MM-DD'});
+            $('#datetimepicker10').datetimepicker({format: 'YYYY-MM-DD'});
+        });
+    </script>
+</body>
+</html>

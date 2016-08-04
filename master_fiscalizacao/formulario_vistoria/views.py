@@ -1,47 +1,10 @@
-import operator
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
-from django.db.models import F
-from .models import Question, Choice, Posto, Laudo
-from django.core.urlresolvers import reverse
+from django.shortcuts import render
+from django.contrib.auth.models import User
+from .models import Posto, Laudo, Foto
 from django.views.decorators.csrf import csrf_exempt
 from master_fiscalizacao.settings import MEDIA_ROOT
-
-
-def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
-    context = {'latest_question_list': latest_question_list}
-    return render(request, 'formulario_vistoria/index.html', context)
-
-
-def detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'formulario_vistoria/detail.html', {'question': question})
-
-
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'formulario_vistoria/results.html', {'question': question})
-
-
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'formulario_vistoria/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        # F avoids race condition.
-        selected_choice.votes = F('votes') + 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('formulario_vistoria:results', args=(question.id,)))
+from datetime import datetime
+import os
 
 
 def preenchimento_formulario_vistoria(request):
@@ -56,20 +19,25 @@ licenca_ambiental_dict = {'Inexistente/Vencido': -1, 'LP': 0, 'LI': 1, 'LO': 2}
 
 @csrf_exempt
 def foto_upload(request):
-    filename = request.FILES['fotos-upload'].name
-    with open(MEDIA_ROOT + '/fotos/' + filename, 'wb+') as destination:
+    user_id = request.user.id
+    username = request.user.username
+    user_first_name = request.user.first_name
+    user_last_name = request.user.last_name
+    directory = MEDIA_ROOT + '/fotos/' + user_first_name + '_' + user_last_name + '_' + str(user_id)
+    os.makedirs(directory, exist_ok=True)
+    timestamp = datetime.now()
+    filename = 'NOVO-' + str(user_id) + username + str(timestamp.year) + str(timestamp.month) + str(timestamp.day) + str(timestamp.hour) + str(timestamp.minute) + str(timestamp.second) + str(timestamp.microsecond) + '.' + request.FILES['fotos-upload'].name.split('.')[1]
+    with open(directory + '/' + filename, 'wb+') as destination:
         for chunk in request.FILES['fotos-upload'].chunks():
             destination.write(chunk)
     return render(request, 'formulario_vistoria/empty_json.json')
 
 
 def foto_delete(request):
-    print(request.FILES)
     return render(request, 'formulario_vistoria/empty_json.json')
 
 
-def save_form_vistoria(request):
-    print(request.POST)
+def save_form_vistoria(request):    
     post_data = request.POST
 
     posto_id = post_data.get('id_posto', None)
@@ -222,10 +190,29 @@ def save_form_vistoria(request):
 
     ocorrencia_text = post_data.get('ocorrencia_text', None)
 
-    laudo = Laudo(posto=posto, numero_proposta=numero_proposta, registro_anp_definitivo=radio_reg_anp, registro_anp_numero=reg_anp_num, registro_anp_data_expedicao=registro_anp_data_expedicao, registro_anp_data_validade=registro_anp_validade, alvara_funcionamento_definitivo=radio_alv_func, alvara_funcionamento_numero=alv_func_num, alvara_funcionamento_data_expedicao=alv_func_data_expedicao, alvara_funcionamento_data_validade=alv_func_validade, licenca_ambiental=radio_lic_amb, licenca_ambiental_numero=lic_amb_num, licenca_ambiental_data_expedicao=lic_amb_data_expedicao, licenca_ambiental_data_validade=lic_amb_validade, atestado_regularidade_ar_sim=radio_atest_reg, atestado_regularidade_ar_numero=atest_reg_num, atestado_regularidade_ar_data_expedicao=atest_reg_data_expedicao, atestado_regularidade_ar_data_validade=atest_reg_validade, observacao=observacao, venda_combustiveis_disponivel=serv_venda_comb, lavagem_viculos_disponivel=serv_lav_veiculos, restaurante_lanchonete_conveniencia_disponivel=serv_lanc_conven, troca_oleo_disponivel=serv_troca_oleo, oficina_mecanica_disponivel=serv_ofic_mec, venda_gas_cozinha=serv_gas_cozinha, outros_servicos_disponibilidade=outros_servicos, valvula_retentora_vapor_disponibilidade=valv_ret_vap, valvula_retentora_vapor_estado_conservacao=radio_val_ret_vap, tanque_sub_parede_dupla_jaquetado=tanq_sub_par_dup_jaq, tanque_sub_parede_data_instalacao=tanq_sub_par_dup_jaq_data_inst, poco_monitoramento_disponibilidade=poco_mon, poco_monitoramento_estado_conservacao=radio_poco_mon, caneletas_ilhas_bombas_disponibilidade=can_ilha_bom, caneletas_ilhas_bombas_estado_conservacao=radio_can_ilha_bom, caneletas_perimetro_disponibilidade=can_per, caneletas_perimetro_estado_conservacao=radio_can_per, piso_concreto_alisado_disponibilidade=piso_alisado_bombas, piso_concreto_alisado_estado_conservacao=radio_piso_alisado_bombas, caneletas_interligadas_sao_disponibilidade=can_int_sao, caneletas_interligadas_sao_estado_conservacao=radio_can_int_sao, sistema_deteccao_vazamento_disponibilidade= sist_det_vaz, sistema_deteccao_vazamento_estado_conservacao=radio_sist_det_vaz, area_lavagem_piso_can_sao_disponibilidade=lav_vei_piso_can_sao, area_lavagem_piso_can_sao_estado_conservacao=radio_lav_vei_piso_can_sao, area_troca_oleo_piso_can_sao_disponibilidade=area_oleo_piso, area_troca_oleo_piso_can_sao_estado_conservacao=radio_area_oleo_piso, area_armazenamento_residuos_coberta_piso_disponibilidade=area_res_piso, area_armazenamento_residuos_coberta_piso_estado_conservacao=radio_area_res_piso, atendido_rede_publica_saneamento=at_red_pub_san, quantidade_tanques=quant_tanq_uni_select, capacidade_armazenamento=cap_tot_arm_txt, houve_sinistro_ultimos_anos=houve_sinistro, prejuizo_estimativa=prej_estim, data_sinistro=sinistro_data, ocorrencia=ocorrencia_text)
+    laudo = Laudo(usuario=User.objects.get(id=request.user.id), posto=posto, numero_proposta=numero_proposta, registro_anp_definitivo=radio_reg_anp, registro_anp_numero=reg_anp_num, registro_anp_data_expedicao=registro_anp_data_expedicao, registro_anp_data_validade=registro_anp_validade, alvara_funcionamento_definitivo=radio_alv_func, alvara_funcionamento_numero=alv_func_num, alvara_funcionamento_data_expedicao=alv_func_data_expedicao, alvara_funcionamento_data_validade=alv_func_validade, licenca_ambiental=radio_lic_amb, licenca_ambiental_numero=lic_amb_num, licenca_ambiental_data_expedicao=lic_amb_data_expedicao, licenca_ambiental_data_validade=lic_amb_validade, atestado_regularidade_ar_sim=radio_atest_reg, atestado_regularidade_ar_numero=atest_reg_num, atestado_regularidade_ar_data_expedicao=atest_reg_data_expedicao, atestado_regularidade_ar_data_validade=atest_reg_validade, observacao=observacao, venda_combustiveis_disponivel=serv_venda_comb, lavagem_viculos_disponivel=serv_lav_veiculos, restaurante_lanchonete_conveniencia_disponivel=serv_lanc_conven, troca_oleo_disponivel=serv_troca_oleo, oficina_mecanica_disponivel=serv_ofic_mec, venda_gas_cozinha=serv_gas_cozinha, outros_servicos_disponibilidade=outros_servicos, valvula_retentora_vapor_disponibilidade=valv_ret_vap, valvula_retentora_vapor_estado_conservacao=radio_val_ret_vap, tanque_sub_parede_dupla_jaquetado=tanq_sub_par_dup_jaq, tanque_sub_parede_data_instalacao=tanq_sub_par_dup_jaq_data_inst, poco_monitoramento_disponibilidade=poco_mon, poco_monitoramento_estado_conservacao=radio_poco_mon, caneletas_ilhas_bombas_disponibilidade=can_ilha_bom, caneletas_ilhas_bombas_estado_conservacao=radio_can_ilha_bom, caneletas_perimetro_disponibilidade=can_per, caneletas_perimetro_estado_conservacao=radio_can_per, piso_concreto_alisado_disponibilidade=piso_alisado_bombas, piso_concreto_alisado_estado_conservacao=radio_piso_alisado_bombas, caneletas_interligadas_sao_disponibilidade=can_int_sao, caneletas_interligadas_sao_estado_conservacao=radio_can_int_sao, sistema_deteccao_vazamento_disponibilidade= sist_det_vaz, sistema_deteccao_vazamento_estado_conservacao=radio_sist_det_vaz, area_lavagem_piso_can_sao_disponibilidade=lav_vei_piso_can_sao, area_lavagem_piso_can_sao_estado_conservacao=radio_lav_vei_piso_can_sao, area_troca_oleo_piso_can_sao_disponibilidade=area_oleo_piso, area_troca_oleo_piso_can_sao_estado_conservacao=radio_area_oleo_piso, area_armazenamento_residuos_coberta_piso_disponibilidade=area_res_piso, area_armazenamento_residuos_coberta_piso_estado_conservacao=radio_area_res_piso, atendido_rede_publica_saneamento=at_red_pub_san, quantidade_tanques=quant_tanq_uni_select, capacidade_armazenamento=cap_tot_arm_txt, houve_sinistro_ultimos_anos=houve_sinistro, prejuizo_estimativa=prej_estim, data_sinistro=sinistro_data, ocorrencia=ocorrencia_text)
 
     laudo.save()
+
+    # VINCULAR AS FOTOS NA PASTA DO USUÁRIO QUE COMECAM COM NOVO-
 
     postos = Posto.objects.order_by('nome')
     context = {'postos': postos}
     return render(request, 'formulario_vistoria/add.html', context)
+
+
+def fill_posto_db(request):
+
+    f = open("PLANILHA POSTOS - BASE DE CADASTRO.csv", 'r')
+    lines = f.readlines()
+
+    Posto.objects.all().delete()
+
+    for i, line in enumerate(lines[1:]):
+        print(float(i) / len(lines[1:]))
+        line = line.split('\n')[0]
+        data = (line.split(';'))
+        posto = Posto(nome=data[1], endereco=data[2], bairro=data[3], cnpj=data[4])
+        posto.save()
+
+    return render(request, 'formulario_vistoria/ok.html')

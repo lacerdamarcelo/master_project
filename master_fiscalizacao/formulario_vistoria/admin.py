@@ -1,8 +1,7 @@
 from django.contrib import admin
 
-from .models import Question, Choice, Laudo, Posto
+from .models import Laudo, Posto, Foto
 
-admin.site.register(Question)
-admin.site.register(Choice)
 admin.site.register(Laudo)
 admin.site.register(Posto)
+admin.site.register(Foto)

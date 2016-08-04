@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['192.168.0.112']
 
 INSTALLED_APPS = [
     'formulario_vistoria.apps.FormularioVistoriaConfig',
+    'user_management.apps.UserManagementConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
