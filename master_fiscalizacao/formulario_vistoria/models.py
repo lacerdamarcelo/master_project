@@ -14,6 +14,12 @@ class Posto(models.Model):
 
 
 class Laudo(models.Model):
+    data_criacao = models.DateField()
+    data_permissao = models.DateField(null=True)
+
+    #DEFINIR ESTADOS
+    status = models.IntegerField()
+
     posto = models.ForeignKey('Posto', on_delete=models.CASCADE, default=None)
 
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, default=None)

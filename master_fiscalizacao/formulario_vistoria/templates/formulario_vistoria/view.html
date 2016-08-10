@@ -36,13 +36,13 @@
     <br>
     <div id="main" class="container-fluid">
      <h3 class="page-header">LAUDO DE INSPEÇÃO PRELIMINAR LIP</h3>
-     <form action="{% url 'formulario_vistoria:save_form_vistoria' %}" method="post">
+     <form action="{% url 'formulario_vistoria:index' %}" method="post">
         {% csrf_token %}
         <!-- area de campos do form -->
         <div class="row">
          <div class="form-group col-md-8">
            <label for="nome_posto">Nome/Razão Social do Posto:</label>
-            <select class="form-control" name="id_posto">
+            <select class="form-control" name="id_posto" disabled>
               {% for posto in postos %}
                 <option value={{ posto.id }}>{{ posto.nome }}</option>
               {% endfor %}
@@ -50,7 +50,7 @@
          </div>
          <div class="form-group col-md-4">
            <label for="numero_proposta">N° Proposta: </label>
-           <input type="text" class="form-control" name="input_num_proposta">
+           <input type="text" class="form-control" name="input_num_proposta" disabled>
          </div>
         </div>
         <hr />
@@ -58,20 +58,20 @@
          <div class="form-group col-md-2">
            <label for="registro_anp">Registro ANP</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Inexistente/Vencido" checked>Inexistente/Vencido</label>
+           <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Inexistente/Vencido" checked disabled>Inexistente/Vencido</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Definitivo">Definitivo</label>
+           <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Definitivo" disabled>Definitivo</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Provisório">Provisório</label>
+           <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Provisório" disabled>Provisório</label>
          </div>         
          <div class="form-group col-md-4">
            <label for="registro_anp_numero">Número</label>
-           <input type="text" class="form-control" nome="reg_anp_num">
+           <input type="text" class="form-control" nome="reg_anp_num" disabled>
          </div>
          <div class="form-group col-md-3">
            <label for="registro_anp_data_expedicao">Data da Expedição</label>
             <div class='input-group date' id='datetimepicker1'>
-                <input type='text' class="form-control" name="registro_anp_data_expedicao" />
+                <input type='text' class="form-control" name="registro_anp_data_expedicao" disabled/>
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -80,7 +80,7 @@
          <div class="form-group col-md-3">
            <label for="registro_anp_validade">Data de Validade</label>
            <div class='input-group date' id='datetimepicker2'>
-              <input type='text' class="form-control" name="registro_anp_validade" />
+              <input type='text' class="form-control" name="registro_anp_validade" disabled/>
               <span class="input-group-addon">
                   <span class="glyphicon glyphicon-calendar"></span>
               </span>
@@ -91,21 +91,21 @@
          <div class="form-group col-md-2">
            <label for="alvara_funcionamento">Alvará de Funcionamento</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Inexistente/Vencido" checked>Inexistente/Vencido</label>
+           <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Inexistente/Vencido" checked disabled>Inexistente/Vencido</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Definitivo">Definitivo</label>
+           <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Definitivo" disabled>Definitivo</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Provisório">Provisório</label>
+           <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Provisório" disabled>Provisório</label>
            <br>
          </div>         
          <div class="form-group col-md-4">
            <label for="alv_func_numero">Número</label>
-           <input type="text" class="form-control" name="alv_func_num">
+           <input type="text" class="form-control" name="alv_func_num" disabled>
          </div>
          <div class="form-group col-md-3">
            <label for="alv_func_data_expedicao">Data da Expedição</label>
            <div class='input-group date' id='datetimepicker3'>
-              <input type='text' class="form-control" name="alv_func_data_expedicao" />
+              <input type='text' class="form-control" name="alv_func_data_expedicao" disabled/>
               <span class="input-group-addon">
                   <span class="glyphicon glyphicon-calendar"></span>
               </span>
@@ -114,7 +114,7 @@
          <div class="form-group col-md-3">
            <label for="alv_func_validade">Data de Validade</label>
            <div class='input-group date' id='datetimepicker4'>
-              <input type='text' class="form-control" name="alv_func_validade" />
+              <input type='text' class="form-control" name="alv_func_validade" disabled/>
               <span class="input-group-addon">
                   <span class="glyphicon glyphicon-calendar"></span>
               </span>
@@ -125,22 +125,22 @@
          <div class="form-group col-md-2">
            <label for="licenca_ambiental">Licença Ambiental</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="Inexistente/Vencido" checked>Inexistente/Vencido</label>
+           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="Inexistente/Vencido" checked disabled>Inexistente/Vencido</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LP">LP</label>
+           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LP" disabled>LP</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LI">LI</label>
+           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LI" disabled>LI</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LO">LO</label>
+           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LO" disabled>LO</label>
          </div>         
          <div class="form-group col-md-4">
            <label for="lic_amb_numero">Número</label>
-           <input type="text" class="form-control" name="lic_amb_num">
+           <input type="text" class="form-control" name="lic_amb_num" disabled>
          </div>
          <div class="form-group col-md-3">
            <label for="lic_amb_data_expedicao">Data da Expedição</label>
            <div class='input-group date' id='datetimepicker5'>
-              <input type='text' class="form-control" name="lic_amb_data_expedicao" />
+              <input type='text' class="form-control" name="lic_amb_data_expedicao" disabled/>
               <span class="input-group-addon">
                   <span class="glyphicon glyphicon-calendar"></span>
               </span>
@@ -149,7 +149,7 @@
          <div class="form-group col-md-3">
            <label for="lic_amb_validade">Data de Validade</label>
            <div class='input-group date' id='datetimepicker6'>
-              <input type='text' class="form-control" name="lic_amb_validade"/>
+              <input type='text' class="form-control" name="lic_amb_validade" disabled/>
               <span class="input-group-addon">
                   <span class="glyphicon glyphicon-calendar"></span>
               </span>
@@ -160,19 +160,19 @@
          <div class="form-group col-md-2">
            <label for="atestado_regularidade">Atestado de Regularidade</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_atest_reg" value="Sim">Sim</label>
+           <label class="radio-inline"><input type="radio" name="radio_atest_reg" value="Sim" disabled>Sim</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_atest_reg" value="Não" checked>Não</label>
+           <label class="radio-inline"><input type="radio" name="radio_atest_reg" value="Não" checked disabled>Não</label>
            <br>
          </div>         
          <div class="form-group col-md-4">
            <label for="atest_reg_numero">Número</label>
-           <input type="text" class="form-control" name="atest_reg_num">
+           <input type="text" class="form-control" name="atest_reg_num" disabled>
          </div>
          <div class="form-group col-md-3">
            <label for="atest_reg_data_expedicao">Data da Expedição</label>
            <div class='input-group date' id='datetimepicker7'>
-              <input type='text' class="form-control" name="atest_reg_data_expedicao"/>
+              <input type='text' class="form-control" name="atest_reg_data_expedicao" disabled/>
               <span class="input-group-addon">
                   <span class="glyphicon glyphicon-calendar"></span>
               </span>
@@ -181,7 +181,7 @@
          <div class="form-group col-md-3">
            <label for="atest_reg_validade">Data de Validade</label>
            <div class='input-group date' id='datetimepicker8'>
-              <input type='text' class="form-control" name="atest_reg_validade"/>
+              <input type='text' class="form-control" name="atest_reg_validade" disabled/>
               <span class="input-group-addon">
                   <span class="glyphicon glyphicon-calendar"></span>
               </span>
@@ -191,7 +191,7 @@
         <div class="row">
           <div class="form-group col-md-12">
            <label for="observacao">Observação</label>
-           <input type="text" class="form-control" name="observacao">
+           <input type="text" class="form-control" name="observacao" disabled>
           </div>
         </div>
         <hr />
@@ -199,28 +199,28 @@
           <br>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_venda_comb">Venda de Combustíveis</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_venda_comb" disabled>Venda de Combustíveis</label>
             </div>
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_troca_oleo">Troca de Óleo</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_troca_oleo" disabled>Troca de Óleo</label>
             </div>
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_lav_veiculos">Lavagem de Veículos</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_lav_veiculos" disabled>Lavagem de Veículos</label>
             </div>
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_ofic_mec">Oficina Mecânica</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_ofic_mec" disabled>Oficina Mecânica</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_lanc_conven">Restaurante/Lanchonete/Loja de Conveniência</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_lanc_conven" disabled>Restaurante/Lanchonete/Loja de Conveniência</label>
             </div>
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_gas_cozinha">Venda de Gás de Cozinha</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_gas_cozinha" disabled>Venda de Gás de Cozinha</label>
             </div>
             <div class="form-group col-md-6">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_outros">Outros:</label>
-              <input type="text" class="form-control" name="outros_servicos">
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="serv_outros" disabled>Outros:</label>
+              <input type="text" class="form-control" name="outros_servicos" disabled>
             </div>
           </div>
         <hr />
@@ -228,24 +228,24 @@
           <br>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="valv_ret_vap">Válvula retentora de vapor</label>              
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="valv_ret_vap" disabled>Válvula retentora de vapor</label>              
             </div>
             <div class="form-group col-md-9">
                 <label for="estado_conservacao_val_ret_vap">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Indisponível"checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Precário">Precário</label>
+                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Indisponível"checked disabled>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Bom" disabled>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Regular" disabled>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Precário" disabled>Precário</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="tanq_sub_par_dup_jaq">Tanque subterrâneo parede dupla jaquetado (NBR 13.785 da ABNT)</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="tanq_sub_par_dup_jaq" disabled>Tanque subterrâneo parede dupla jaquetado (NBR 13.785 da ABNT)</label>
             </div>
             <div class="form-group col-md-6">
                 <label for="tanq_sub_par_dup_jaq_data_inst">Data da instalação: </label>
                 <div class='input-group date' id='datetimepicker9'>
-                    <input type='text' class="form-control" name="tanq_sub_par_dup_jaq_data_inst"/>
+                    <input type='text' class="form-control" name="tanq_sub_par_dup_jaq_data_inst" disabled/>
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -254,115 +254,115 @@
           </div>
           <div class="row">           
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="poco_mon">Poço de monitoramento</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="poco_mon" disabled>Poço de monitoramento</label>
             </div>
             <div class="form-group col-md-9">
                 <label for="estado_conservacao_poco_mon">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Precário">Precário</label>
+                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Indisponível" checked disabled>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Bom" disabled>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Regular" disabled>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Precário" disabled>Precário</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="can_ilha_bom">Caneletas de ilha de bombas</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="can_ilha_bom" disabled>Caneletas de ilha de bombas</label>
             </div>
             <div class="form-group col-md-9">
                 <label for="estado_conservacao_can_ilha_bom">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Precário">Precário</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Indisponível" checked disabled>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Bom" disabled>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Regular" disabled>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Precário" disabled>Precário</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="can_per">Caneletas de perímetro</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="can_per" disabled>Caneletas de perímetro</label>
             </div>
             <div class="form-group col-md-9">
                 <label for="estado_conservacao_can_per">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Precário">Precário</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Indisponível" checked disabled>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Bom" disabled>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Regular" disabled>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Precário" disabled>Precário</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="piso_alisado_bombas">Piso em concreto alisado na pista de bombas</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="piso_alisado_bombas" disabled>Piso em concreto alisado na pista de bombas</label>
             </div>
             <div class="form-group col-md-9">
                 <label for="estado_conservacao_piso_alisado_bombas">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Precário">Precário</label>
+                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Indisponível" checked disabled>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Bom" disabled>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Regular" disabled>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Precário" disabled>Precário</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="can_int_sao">Canaletas interligadas ao SAO</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="can_int_sao" disabled>Canaletas interligadas ao SAO</label>
             </div>
             <div class="form-group col-md-9">
                 <label for="estado_conservacao_can_int_sao">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Precário">Precário</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Indisponível" checked disabled>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Bom" disabled>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Regular" disabled>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Precário" disabled>Precário</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="sist_det_vaz">Possui sistema de detecção de vazamentos</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="sist_det_vaz" disabled>Possui sistema de detecção de vazamentos</label>
             </div>
             <div class="form-group col-md-9">
                 <label for="estado_conservacao_sist_det_vaz">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Precário">Precário</label>
+                <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Indisponível" checked disabled>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Bom" disabled>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Regular" disabled>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Precário" disabled>Precário</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="lav_vei_piso_can_sao">Área de lavagem de veículos com piso, canaletas e SAO</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="lav_vei_piso_can_sao" disabled>Área de lavagem de veículos com piso, canaletas e SAO</label>
             </div>
             <div class="form-group col-md-9">
                 <label for="estado_conservacao_lav_vei_piso_can_sao">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Precário">Precário</label>
+                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Indisponível" checked disabled>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Bom" disabled>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Regular" disabled>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Precário" disabled>Precário</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="area_oleo_piso">Área de troca de óleo com piso, canaletas e SAO</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="area_oleo_piso" disabled>Área de troca de óleo com piso, canaletas e SAO</label>
             </div>
             <div class="form-group col-md-9">
                 <label for="estado_conservacao_area_oleo_piso">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Precário">Precário</label>
+                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Indisponível" checked disabled>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Bom" disabled>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Regular" disabled>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Precário" disabled>Precário</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="area_res_piso">Área de armazenamento de resíduos coberta com piso</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="area_res_piso" disabled>Área de armazenamento de resíduos coberta com piso</label>
             </div>
             <div class="form-group col-md-9">
                 <label for="estado_conservacao_area_oleo_piso">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Precário">Precário</label>
+                <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Indisponível" checked disabled>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Bom" disabled>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Regular" disabled>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Precário" disabled>Precário</label>
             </div>
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="at_red_pub_san">Atendido pela rede pública de saneamento</label>
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="at_red_pub_san" disabled>Atendido pela rede pública de saneamento</label>
             </div>
           </div>
           <br>
@@ -372,7 +372,7 @@
                <label for="quant_tanq_uni_list">Quantidade de tanques (unidade)</label>
             </div>
             <div class="form-group col-md-1">
-                <select class="form-control" name="quant_tanq_uni_select" id="quant_tanq_uni_select">
+                <select class="form-control" name="quant_tanq_uni_select" id="quant_tanq_uni_select" disabled>
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -390,7 +390,7 @@
           <div class="row">       
            <div class="form-group col-md-4">
              <label for="cap_tot_arm">Capacidade total de armazenamento (litros)</label>
-             <input type="text" class="form-control" name="cap_tot_arm_txt">
+             <input type="text" class="form-control" name="cap_tot_arm_txt" disabled>
            </div>
           </div>
         <hr />
@@ -398,16 +398,16 @@
           <br>
           <div class="row">
             <div class="form-group col-md-4">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="houve_sinistro">Houve sinistro nos cinco últimos anos</label>              
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="houve_sinistro" disabled>Houve sinistro nos cinco últimos anos</label>              
             </div>
              <div class="form-group col-md-4">
                <label for="prej_est_label">Prejuízo, estimativa R$: </label>
-               <input type="text" class="form-control" name="prej_estim">
+               <input type="text" class="form-control" name="prej_estim" disabled>
              </div>
              <div class="form-group col-md-4">
                <label for="sinistro_data">Data: </label>
                 <div class='input-group date' id='datetimepicker10'>
-                <input type='text' class="form-control" name="sinistro_data" />
+                <input type='text' class="form-control" name="sinistro_data" disabled/>
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -417,22 +417,21 @@
           <div class="row">
             <div class="form-group col-md-12">
              <label for="ocorrencia_sinistro">Ocorrência: </label>
-             <input type="text" class="form-control" name="ocorrencia_text">
+             <input type="text" class="form-control" name="ocorrencia_text" disabled>
             </div>
           </div>
         <hr />
         <div id="actions" class="row">
           <div class="col-md-12">
             <div class="form-group">
-              <input id="foto-upload" type="file" class="foto-upload" name="fotos-upload" multiple=true data-preview-file-type="any">
+              <input id="foto-upload" type="file" class="foto-upload" name="fotos-upload" multiple=true data-preview-file-type="any" disabled>
             </div>
           </div>
         </div>
         <hr />
         <div id="actions" class="row">
           <div class="col-md-12">
-            <button type="submit" class="btn btn-primary">Salvar</button>
-            <a href="{% url 'formulario_vistoria:index' %}" class="btn btn-default">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Voltar</button>
           </div>
         </div>
      </form>

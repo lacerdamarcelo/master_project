@@ -42,7 +42,7 @@ def autenticacao(request):
         # the password verified for the user
         if user.is_active:
             auth_login(request, user)
-            return redirect('/formulario_vistoria/preenchimento_formulario_vistoria/')
+            return redirect('/formulario_vistoria/index')
         else:
             print("The password is valid, but the account has been disabled!")
     else:

@@ -1,16 +1,39 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from .models import Posto, Laudo, Foto
+from .models import Posto, Laudo
 from django.views.decorators.csrf import csrf_exempt
 from master_fiscalizacao.settings import MEDIA_ROOT
 from datetime import datetime
 import os
 
 
+def visualizar_laudo(request):
+    return render(request, 'formulario_vistoria/view.html')
+
+
 def preenchimento_formulario_vistoria(request):
     postos = Posto.objects.order_by('nome')
     context = {'postos': postos}
     return render(request, 'formulario_vistoria/add.html', context)
+
+
+def carregar_lista_laudos(request):
+    post_data = request.POST
+    data_search = post_data.get('data_search', '')
+    if data_search == '':
+        laudos = Laudo.objects.order_by('-data_criacao')
+    else:
+        postos = Posto.objects.filter(nome__icontains=data_search)
+        if len(postos) != 0:
+            laudos = []
+            for posto in postos:
+                laudos_query = Laudo.objects.filter(posto=posto)
+                for laudo in laudos_query:
+                    laudos.append(laudo)
+        else:
+            laudos = Laudo.objects.filter(numero_proposta=data_search).order_by('-data_criacao')
+    context = {'laudos': laudos}
+    return render(request, 'formulario_vistoria/index.html', context)
 
 
 estado_conservacao_dict = {'Indisponível': -1, 'Precário': 0, 'Regular': 1, 'Bom': 2}
@@ -190,7 +213,9 @@ def save_form_vistoria(request):
 
     ocorrencia_text = post_data.get('ocorrencia_text', None)
 
-    laudo = Laudo(usuario=User.objects.get(id=request.user.id), posto=posto, numero_proposta=numero_proposta, registro_anp_definitivo=radio_reg_anp, registro_anp_numero=reg_anp_num, registro_anp_data_expedicao=registro_anp_data_expedicao, registro_anp_data_validade=registro_anp_validade, alvara_funcionamento_definitivo=radio_alv_func, alvara_funcionamento_numero=alv_func_num, alvara_funcionamento_data_expedicao=alv_func_data_expedicao, alvara_funcionamento_data_validade=alv_func_validade, licenca_ambiental=radio_lic_amb, licenca_ambiental_numero=lic_amb_num, licenca_ambiental_data_expedicao=lic_amb_data_expedicao, licenca_ambiental_data_validade=lic_amb_validade, atestado_regularidade_ar_sim=radio_atest_reg, atestado_regularidade_ar_numero=atest_reg_num, atestado_regularidade_ar_data_expedicao=atest_reg_data_expedicao, atestado_regularidade_ar_data_validade=atest_reg_validade, observacao=observacao, venda_combustiveis_disponivel=serv_venda_comb, lavagem_viculos_disponivel=serv_lav_veiculos, restaurante_lanchonete_conveniencia_disponivel=serv_lanc_conven, troca_oleo_disponivel=serv_troca_oleo, oficina_mecanica_disponivel=serv_ofic_mec, venda_gas_cozinha=serv_gas_cozinha, outros_servicos_disponibilidade=outros_servicos, valvula_retentora_vapor_disponibilidade=valv_ret_vap, valvula_retentora_vapor_estado_conservacao=radio_val_ret_vap, tanque_sub_parede_dupla_jaquetado=tanq_sub_par_dup_jaq, tanque_sub_parede_data_instalacao=tanq_sub_par_dup_jaq_data_inst, poco_monitoramento_disponibilidade=poco_mon, poco_monitoramento_estado_conservacao=radio_poco_mon, caneletas_ilhas_bombas_disponibilidade=can_ilha_bom, caneletas_ilhas_bombas_estado_conservacao=radio_can_ilha_bom, caneletas_perimetro_disponibilidade=can_per, caneletas_perimetro_estado_conservacao=radio_can_per, piso_concreto_alisado_disponibilidade=piso_alisado_bombas, piso_concreto_alisado_estado_conservacao=radio_piso_alisado_bombas, caneletas_interligadas_sao_disponibilidade=can_int_sao, caneletas_interligadas_sao_estado_conservacao=radio_can_int_sao, sistema_deteccao_vazamento_disponibilidade= sist_det_vaz, sistema_deteccao_vazamento_estado_conservacao=radio_sist_det_vaz, area_lavagem_piso_can_sao_disponibilidade=lav_vei_piso_can_sao, area_lavagem_piso_can_sao_estado_conservacao=radio_lav_vei_piso_can_sao, area_troca_oleo_piso_can_sao_disponibilidade=area_oleo_piso, area_troca_oleo_piso_can_sao_estado_conservacao=radio_area_oleo_piso, area_armazenamento_residuos_coberta_piso_disponibilidade=area_res_piso, area_armazenamento_residuos_coberta_piso_estado_conservacao=radio_area_res_piso, atendido_rede_publica_saneamento=at_red_pub_san, quantidade_tanques=quant_tanq_uni_select, capacidade_armazenamento=cap_tot_arm_txt, houve_sinistro_ultimos_anos=houve_sinistro, prejuizo_estimativa=prej_estim, data_sinistro=sinistro_data, ocorrencia=ocorrencia_text)
+    data_criacao = datetime.now()
+
+    laudo = Laudo(satus=0, data_criacao=data_criacao, usuario=User.objects.get(id=request.user.id), posto=posto, numero_proposta=numero_proposta, registro_anp_definitivo=radio_reg_anp, registro_anp_numero=reg_anp_num, registro_anp_data_expedicao=registro_anp_data_expedicao, registro_anp_data_validade=registro_anp_validade, alvara_funcionamento_definitivo=radio_alv_func, alvara_funcionamento_numero=alv_func_num, alvara_funcionamento_data_expedicao=alv_func_data_expedicao, alvara_funcionamento_data_validade=alv_func_validade, licenca_ambiental=radio_lic_amb, licenca_ambiental_numero=lic_amb_num, licenca_ambiental_data_expedicao=lic_amb_data_expedicao, licenca_ambiental_data_validade=lic_amb_validade, atestado_regularidade_ar_sim=radio_atest_reg, atestado_regularidade_ar_numero=atest_reg_num, atestado_regularidade_ar_data_expedicao=atest_reg_data_expedicao, atestado_regularidade_ar_data_validade=atest_reg_validade, observacao=observacao, venda_combustiveis_disponivel=serv_venda_comb, lavagem_viculos_disponivel=serv_lav_veiculos, restaurante_lanchonete_conveniencia_disponivel=serv_lanc_conven, troca_oleo_disponivel=serv_troca_oleo, oficina_mecanica_disponivel=serv_ofic_mec, venda_gas_cozinha=serv_gas_cozinha, outros_servicos_disponibilidade=outros_servicos, valvula_retentora_vapor_disponibilidade=valv_ret_vap, valvula_retentora_vapor_estado_conservacao=radio_val_ret_vap, tanque_sub_parede_dupla_jaquetado=tanq_sub_par_dup_jaq, tanque_sub_parede_data_instalacao=tanq_sub_par_dup_jaq_data_inst, poco_monitoramento_disponibilidade=poco_mon, poco_monitoramento_estado_conservacao=radio_poco_mon, caneletas_ilhas_bombas_disponibilidade=can_ilha_bom, caneletas_ilhas_bombas_estado_conservacao=radio_can_ilha_bom, caneletas_perimetro_disponibilidade=can_per, caneletas_perimetro_estado_conservacao=radio_can_per, piso_concreto_alisado_disponibilidade=piso_alisado_bombas, piso_concreto_alisado_estado_conservacao=radio_piso_alisado_bombas, caneletas_interligadas_sao_disponibilidade=can_int_sao, caneletas_interligadas_sao_estado_conservacao=radio_can_int_sao, sistema_deteccao_vazamento_disponibilidade= sist_det_vaz, sistema_deteccao_vazamento_estado_conservacao=radio_sist_det_vaz, area_lavagem_piso_can_sao_disponibilidade=lav_vei_piso_can_sao, area_lavagem_piso_can_sao_estado_conservacao=radio_lav_vei_piso_can_sao, area_troca_oleo_piso_can_sao_disponibilidade=area_oleo_piso, area_troca_oleo_piso_can_sao_estado_conservacao=radio_area_oleo_piso, area_armazenamento_residuos_coberta_piso_disponibilidade=area_res_piso, area_armazenamento_residuos_coberta_piso_estado_conservacao=radio_area_res_piso, atendido_rede_publica_saneamento=at_red_pub_san, quantidade_tanques=quant_tanq_uni_select, capacidade_armazenamento=cap_tot_arm_txt, houve_sinistro_ultimos_anos=houve_sinistro, prejuizo_estimativa=prej_estim, data_sinistro=sinistro_data, ocorrencia=ocorrencia_text)
 
     laudo.save()
 

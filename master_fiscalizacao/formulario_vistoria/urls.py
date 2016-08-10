@@ -8,4 +8,6 @@ urlpatterns = [
     url(r'^foto_upload/$', views.foto_upload, name='foto_upload'),
     url(r'^foto_delete/$', views.foto_delete, name='foto_delete'),
     url(r'^fill_posto_db/$', views.fill_posto_db, name='fill_posto_db'),
+    url(r'^index/$', views.carregar_lista_laudos, name='index'),
+    url(r'^visualizar_laudo/$', views.visualizar_laudo, name='visualizar_laudo'),
 ]
