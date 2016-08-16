@@ -60,6 +60,30 @@
      </div> <!-- /#top -->
  
      <hr />
+     <form action="{% url 'formulario_vistoria:index' %}" method="post">
+     <div class="row">
+       <div class="form-group col-md-4">
+         <label for="nome_posto">Ordenar por:</label>
+         <div class="input-group">
+          <select class="form-control" name="ordenar_por">
+            <option value="0">Número da Proposta &darr;</option>
+            <option value="1">Número da Proposta &uarr;</option>
+            <option value="2">Razão Social &darr;</option>
+            <option value="3">Razão Social &uarr;</option>
+            <option value="4">Data de Criação &darr;</option>
+            <option value="5">Data de Criação &uarr;</option>
+            <option value="6">Data da Autorização &darr;</option>
+            <option value="7">Data da Autorização &uarr;</option>
+            <option value="8">Status &darr;</option>
+            <option value="9">Status &uarr;</option>
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">Ordenar</button>
+          </span>
+        </div>   
+       </div>
+      </div>
+     </form>
      <div id="list" class="row">
  
         <div class="table-responsive col-md-12">

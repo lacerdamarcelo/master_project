@@ -39,6 +39,13 @@
      <form action="{% url 'formulario_vistoria:save_form_vistoria' %}" method="post">
         {% csrf_token %}
         <!-- area de campos do form -->
+        {% if valid_form == False %}
+          <div class="row">
+            <div class="alert alert-danger">
+              <strong>Campos inválidos!</strong> Verifique os campos marcados em vermelho e corrija os seus preenchimento.
+            </div>
+          </div>
+        {% endif %}
         <div class="row">
          <div class="form-group col-md-8">
            <label for="nome_posto">Nome/Razão Social do Posto:</label>
@@ -48,9 +55,21 @@
               {% endfor %}
             </select>
          </div>
-         <div class="form-group col-md-4">
-           <label for="numero_proposta">N° Proposta: </label>
-           <input type="text" class="form-control" name="input_num_proposta">
+         {% if valid_form == False %}
+            {% if 'numero_proposta' in invalid_fields %}
+              <div class="form-group col-md-4 has-error has-feedback">
+              <label for="numero_proposta">N° Proposta: </label>
+              <input type="text" class="form-control" name="input_num_proposta" value="{{ numero_proposta }}">
+            {% else %}
+              <div class="form-group col-md-4">
+              <label for="numero_proposta">N° Proposta: </label>
+              <input type="text" class="form-control" name="input_num_proposta" value="{{ numero_proposta }}">
+            {% endif %}
+         {% else %}
+            <div class="form-group col-md-4">
+            <label for="numero_proposta">N° Proposta: </label>
+            <input type="text" class="form-control" name="input_num_proposta">
+         {% endif %}
          </div>
         </div>
         <hr />
@@ -58,143 +77,496 @@
          <div class="form-group col-md-2">
            <label for="registro_anp">Registro ANP</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Inexistente/Vencido" checked>Inexistente/Vencido</label>
-           <br>
-           <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Definitivo">Definitivo</label>
-           <br>
-           <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Provisório">Provisório</label>
-         </div>         
-         <div class="form-group col-md-4">
-           <label for="registro_anp_numero">Número</label>
-           <input type="text" class="form-control" nome="reg_anp_num">
+           {% if radio_reg_anp == None %}
+            <label class="radio-inline"><input type="radio" id="radio_reg_anp" name="radio_reg_anp" value="Inexistente/Vencido" checked>Inexistente/Vencido</label>
+            <br>
+            <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Definitivo">Definitivo</label>
+            <br>
+            <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Provisório">Provisório</label>
+           {% elif radio_reg_anp == True %}
+            <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Inexistente/Vencido">Inexistente/Vencido</label>
+            <br>
+            <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Definitivo" checked>Definitivo</label>
+            <br>
+            <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Provisório">Provisório</label>
+           {% elif radio_reg_anp == False %}
+            <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Inexistente/Vencido">Inexistente/Vencido</label>
+            <br>
+            <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Definitivo">Definitivo</label>
+            <br>
+            <label class="radio-inline"><input type="radio" name="radio_reg_anp" value="Provisório" checked>Provisório</label>
+           {% endif %}
+         <br>           
          </div>
-         <div class="form-group col-md-3">
-           <label for="registro_anp_data_expedicao">Data da Expedição</label>
-            <div class='input-group date' id='datetimepicker1'>
-                <input type='text' class="form-control" name="registro_anp_data_expedicao" />
-                <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-            </div>
-         </div>
-         <div class="form-group col-md-3">
-           <label for="registro_anp_validade">Data de Validade</label>
-           <div class='input-group date' id='datetimepicker2'>
-              <input type='text' class="form-control" name="registro_anp_validade" />
-              <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-              </span>
-          </div>
-         </div>
+         {% if valid_form == False %}
+           {% if 'reg_anp_num' in invalid_fields %}
+             <div class="form-group col-md-4 has-error has-feedback">
+               <label for="registro_anp_numero">Número</label>
+               <input type="text" class="form-control" name="reg_anp_num" value="{{ reg_anp_num }}">
+             </div>
+           {% else %}
+             <div class="form-group col-md-4">
+               <label for="registro_anp_numero">Número</label>
+               <input type="text" class="form-control" name="reg_anp_num" value="{{ reg_anp_num }}">
+             </div>
+           {% endif %}
+         {% else %}
+            <div class="form-group col-md-4">
+               <label for="registro_anp_numero">Número</label>
+               <input type="text" class="form-control" name="reg_anp_num">
+             </div>
+         {% endif %}
+         {% if valid_form == False %}
+           {% if 'registro_anp_data_expedicao' in invalid_fields %}
+           <div class="form-group col-md-3 has-error has-feedback">
+             <label for="registro_anp_data_expedicao">Data da Expedição</label>
+              <div class='input-group date' id='datetimepicker1'>
+                  <input type='text' class="form-control" name="registro_anp_data_expedicao" value="{{ registro_anp_data_expedicao }}"/>
+                  <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+              </div>
+           </div>
+           {% else %}
+           <div class="form-group col-md-3">
+             <label for="registro_anp_data_expedicao">Data da Expedição</label>
+              <div class='input-group date' id='datetimepicker1'>
+                  <input type='text' class="form-control" name="registro_anp_data_expedicao" value="{{ registro_anp_data_expedicao }}"/>
+                  <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+              </div>
+           </div>
+           {% endif %}
+         {% else %}
+            <div class="form-group col-md-3">
+             <label for="registro_anp_data_expedicao">Data da Expedição</label>
+              <div class='input-group date' id='datetimepicker1'>
+                  <input type='text' class="form-control" name="registro_anp_data_expedicao"/>
+                  <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+              </div>
+           </div>
+         {% endif %}
+         {% if valid_form == False %}
+           {% if 'registro_anp_validade' in invalid_fields %}
+             <div class="form-group col-md-3 has-error has-feedback" has-error has-feedback>
+               <label for="registro_anp_validade">Data de Validade</label>
+               <div class='input-group date' id='datetimepicker2'>
+                  <input type='text' class="form-control" name="registro_anp_validade" value="{{ registro_anp_validade }}"/>
+                  <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+              </div>
+             </div>
+           {% else %}
+             <div class="form-group col-md-3">
+               <label for="registro_anp_validade">Data de Validade</label>
+               <div class='input-group date' id='datetimepicker2'>
+                  <input type='text' class="form-control" name="registro_anp_validade" value="{{ registro_anp_validade }}"/>
+                  <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+              </div>
+             </div>
+           {% endif %}
+         {% else %}
+            <div class="form-group col-md-3">
+               <label for="registro_anp_validade">Data de Validade</label>
+               <div class='input-group date' id='datetimepicker2'>
+                  <input type='text' class="form-control" name="registro_anp_validade"/>
+                  <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+              </div>
+             </div>
+         {% endif %}
         </div>
         <div class="row">
          <div class="form-group col-md-2">
            <label for="alvara_funcionamento">Alvará de Funcionamento</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Inexistente/Vencido" checked>Inexistente/Vencido</label>
-           <br>
-           <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Definitivo">Definitivo</label>
-           <br>
-           <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Provisório">Provisório</label>
-           <br>
-         </div>         
-         <div class="form-group col-md-4">
-           <label for="alv_func_numero">Número</label>
-           <input type="text" class="form-control" name="alv_func_num">
+           {% if radio_alv_func == None %}
+             <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Inexistente/Vencido" checked>Inexistente/Vencido</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Definitivo">Definitivo</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Provisório">Provisório</label>
+             <br>
+           {% elif radio_alv_func == True %}
+             <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Inexistente/Vencido">Inexistente/Vencido</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Definitivo" checked>Definitivo</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Provisório">Provisório</label>
+             <br>
+           {% elif radio_alv_func == False %}
+             <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Inexistente/Vencido">Inexistente/Vencido</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Definitivo">Definitivo</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_alv_func" value="Provisório" checked>Provisório</label>
+             <br>
+           {% endif %}
          </div>
-         <div class="form-group col-md-3">
-           <label for="alv_func_data_expedicao">Data da Expedição</label>
-           <div class='input-group date' id='datetimepicker3'>
-              <input type='text' class="form-control" name="alv_func_data_expedicao" />
-              <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-              </span>
+         {% if valid_form == False %}
+          {% if 'alv_func_num' in invalid_fields %}
+           <div class="form-group col-md-4 has-error has-feedback">
+             <label for="alv_func_numero">Número</label>
+             <input type="text" class="form-control" name="alv_func_num" value="{{ alv_func_num }}">
+           </div>
+          {% else %}
+           <div class="form-group col-md-4">
+             <label for="alv_func_numero">Número</label>
+             <input type="text" class="form-control" name="alv_func_num" value="{{ alv_func_num }}">
+           </div>
+          {% endif %}
+         {% else %}
+          <div class="form-group col-md-4">
+             <label for="alv_func_numero">Número</label>
+             <input type="text" class="form-control" name="alv_func_num">
+          </div>          
+         {% endif %}
+         {% if valid_form == False %}
+          {% if 'alv_func_data_expedicao' in invalid_fields %}
+            <div class="form-group col-md-3 has-error has-feedback">
+             <label for="alv_func_data_expedicao">Data da Expedição</label>
+             <div class='input-group date' id='datetimepicker3'>
+                <input type='text' class="form-control" name="alv_func_data_expedicao" value="{{ alv_func_data_expedicao }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+          {% else %}
+            <div class="form-group col-md-3">
+             <label for="alv_func_data_expedicao">Data da Expedição</label>
+             <div class='input-group date' id='datetimepicker3'>
+                <input type='text' class="form-control" name="alv_func_data_expedicao" value="{{ alv_func_data_expedicao }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+          {% endif %}
+         {% else %}
+           <div class="form-group col-md-3">
+             <label for="alv_func_data_expedicao">Data da Expedição</label>
+             <div class='input-group date' id='datetimepicker3'>
+                <input type='text' class="form-control" name="alv_func_data_expedicao"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+         {% endif %}
+         {% if valid_form == False %}
+          {% if 'alv_func_validade' in invalid_fields %}
+           <div class="form-group col-md-3 has-error has-feedback">
+             <label for="alv_func_validade">Data de Validade</label>
+             <div class='input-group date' id='datetimepicker4'>
+                <input type='text' class="form-control" name="alv_func_validade" value="{{ alv_func_validade }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
           </div>
-         </div>
-         <div class="form-group col-md-3">
-           <label for="alv_func_validade">Data de Validade</label>
-           <div class='input-group date' id='datetimepicker4'>
-              <input type='text' class="form-control" name="alv_func_validade" />
-              <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-              </span>
+          {% else %}
+            <div class="form-group col-md-3">
+             <label for="alv_func_validade">Data de Validade</label>
+             <div class='input-group date' id='datetimepicker4'>
+                <input type='text' class="form-control" name="alv_func_validade" value="{{ alv_func_validade }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
           </div>
-         </div>
-        </div>
+          {% endif %}
+         {% else %}
+            <div class="form-group col-md-3">
+             <label for="alv_func_validade">Data de Validade</label>
+             <div class='input-group date' id='datetimepicker4'>
+                <input type='text' class="form-control" name="alv_func_validade"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+          </div>
+         {% endif %}
         <div class="row">
          <div class="form-group col-md-2">
            <label for="licenca_ambiental">Licença Ambiental</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="Inexistente/Vencido" checked>Inexistente/Vencido</label>
-           <br>
-           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LP">LP</label>
-           <br>
-           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LI">LI</label>
-           <br>
-           <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LO">LO</label>
-         </div>         
-         <div class="form-group col-md-4">
-           <label for="lic_amb_numero">Número</label>
-           <input type="text" class="form-control" name="lic_amb_num">
+           {% if radio_lic_amb == -1 or radio_lic_amb == None %}
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="Inexistente/Vencido" checked>Inexistente/Vencido</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LP">LP</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LI">LI</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LO">LO</label>
+           {% elif radio_lic_amb == 0 %}
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="Inexistente/Vencido">Inexistente/Vencido</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LP" checked>LP</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LI">LI</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LO">LO</label>
+           {% elif radio_lic_amb == 1 %}
+              <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="Inexistente/Vencido">Inexistente/Vencido</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LP">LP</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LI" checked>LI</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LO">LO</label>
+           {% elif radio_lic_amb == 2 %}
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="Inexistente/Vencido">Inexistente/Vencido</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LP">LP</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LI">LI</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_lic_amb" value="LO" checked>LO</label>
+           {% endif %}
          </div>
-         <div class="form-group col-md-3">
-           <label for="lic_amb_data_expedicao">Data da Expedição</label>
-           <div class='input-group date' id='datetimepicker5'>
-              <input type='text' class="form-control" name="lic_amb_data_expedicao" />
-              <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-              </span>
-          </div>
-         </div>
-         <div class="form-group col-md-3">
-           <label for="lic_amb_validade">Data de Validade</label>
-           <div class='input-group date' id='datetimepicker6'>
-              <input type='text' class="form-control" name="lic_amb_validade"/>
-              <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-              </span>
-          </div>
-         </div>
+         {% if valid_form == False %}
+          {% if 'lic_amb_num' in invalid_fields %}
+           <div class="form-group col-md-4 has-error has-feedback">
+             <label for="lic_amb_num">Número</label>
+             <input type="text" class="form-control" name="lic_amb_num" value="{{ lic_amb_num }}">
+           </div>
+          {% else %}
+            <div class="form-group col-md-4">
+             <label for="lic_amb_num">Número</label>
+             <input type="text" class="form-control" name="lic_amb_num" value="{{ lic_amb_num }}">
+            </div>
+          {% endif %}
+         {% else %}
+           <div class="form-group col-md-4">
+             <label for="lic_amb_num">Número</label>
+             <input type="text" class="form-control" name="lic_amb_num">
+           </div>
+         {% endif %}
+         {% if valid_form == False %}
+          {% if 'lic_amb_data_expedicao' in invalid_fields %}
+            <div class="form-group col-md-3 has-error has-feedback">
+             <label for="lic_amb_data_expedicao">Data da Expedição</label>
+             <div class='input-group date' id='datetimepicker5'>
+                <input type='text' class="form-control" name="lic_amb_data_expedicao" value = "{{ lic_amb_data_expedicao }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+          {% else %}
+            <div class="form-group col-md-3">
+             <label for="lic_amb_data_expedicao">Data da Expedição</label>
+             <div class='input-group date' id='datetimepicker5'>
+                <input type='text' class="form-control" name="lic_amb_data_expedicao" value = "{{ lic_amb_data_expedicao }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+          {% endif %}
+         {% else %}
+            <div class="form-group col-md-3">
+             <label for="lic_amb_data_expedicao">Data da Expedição</label>
+             <div class='input-group date' id='datetimepicker5'>
+                <input type='text' class="form-control" name="lic_amb_data_expedicao"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+         {% endif %}
+         {% if valid_form == False %}
+          {% if 'lic_amb_validade' in invalid_fields %}
+            <div class="form-group col-md-3 has-error has-feedback">
+             <label for="lic_amb_validade">Data de Validade</label>
+             <div class='input-group date' id='datetimepicker6'>
+                <input type='text' class="form-control" name="lic_amb_validade" value="{{ lic_amb_validade }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+          {% else %}
+            <div class="form-group col-md-3">
+             <label for="lic_amb_validade">Data de Validade</label>
+             <div class='input-group date' id='datetimepicker6'>
+                <input type='text' class="form-control" name="lic_amb_validade" value="{{ lic_amb_validade }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+          {% endif %}
+         {% else %}
+            <div class="form-group col-md-3">
+             <label for="lic_amb_validade">Data de Validade</label>
+             <div class='input-group date' id='datetimepicker6'>
+                <input type='text' class="form-control" name="lic_amb_validade"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+         {% endif %}
         </div>
         <div class="row">
          <div class="form-group col-md-2">
            <label for="atestado_regularidade">Atestado de Regularidade</label>
            <br>
-           <label class="radio-inline"><input type="radio" name="radio_atest_reg" value="Sim">Sim</label>
-           <br>
-           <label class="radio-inline"><input type="radio" name="radio_atest_reg" value="Não" checked>Não</label>
-           <br>
-         </div>         
-         <div class="form-group col-md-4">
-           <label for="atest_reg_numero">Número</label>
-           <input type="text" class="form-control" name="atest_reg_num">
+           {% if radio_atest_reg == True %}
+             <label class="radio-inline"><input type="radio" name="radio_atest_reg" value="Sim" checked>Sim</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_atest_reg" value="Não">Não</label>
+             <br>
+           {% elif radio_atest_reg == False or radio_atest_reg == None %}
+             <label class="radio-inline"><input type="radio" name="radio_atest_reg" value="Sim">Sim</label>
+             <br>
+             <label class="radio-inline"><input type="radio" name="radio_atest_reg" value="Não" checked>Não</label>
+             <br>
+           {% endif %}
          </div>
-         <div class="form-group col-md-3">
-           <label for="atest_reg_data_expedicao">Data da Expedição</label>
-           <div class='input-group date' id='datetimepicker7'>
-              <input type='text' class="form-control" name="atest_reg_data_expedicao"/>
-              <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-              </span>
-          </div>
-         </div>
-         <div class="form-group col-md-3">
-           <label for="atest_reg_validade">Data de Validade</label>
-           <div class='input-group date' id='datetimepicker8'>
-              <input type='text' class="form-control" name="atest_reg_validade"/>
-              <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-              </span>
-          </div>
-         </div>
+         {% if valid_form == False %}
+           {% if 'atest_reg_num' in invalid_fields %}
+             <div class="form-group col-md-4 has-error has-feedback">
+               <label for="atest_reg_numero">Número</label>
+               <input type="text" class="form-control" name="atest_reg_num" value="{{ atest_reg_num }}">
+             </div>
+           {% else %}
+             <div class="form-group col-md-4">
+               <label for="atest_reg_numero">Número</label>
+               <input type="text" class="form-control" name="atest_reg_num" value="{{ atest_reg_num }}">
+             </div>
+           {% endif %}
+         {% else %}
+            <div class="form-group col-md-4">
+               <label for="atest_reg_numero">Número</label>
+               <input type="text" class="form-control" name="atest_reg_num">
+             </div>
+         {% endif %}
+         {% if valid_form == False %}
+          {% if 'atest_reg_data_expedicao' in invalid_fields %}
+            <div class="form-group col-md-3 has-error has-feedback">
+             <label for="atest_reg_data_expedicao">Data da Expedição</label>
+             <div class='input-group date' id='datetimepicker7'>
+                <input type='text' class="form-control" name="atest_reg_data_expedicao" value="{{ atest_reg_data_expedicao }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+          {% else %}
+            <div class="form-group col-md-3">
+             <label for="atest_reg_data_expedicao">Data da Expedição</label>
+             <div class='input-group date' id='datetimepicker7'>
+                <input type='text' class="form-control" name="atest_reg_data_expedicao" value="{{ atest_reg_data_expedicao }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+          {% endif %}
+         {% else %}
+            <div class="form-group col-md-3">
+             <label for="atest_reg_data_expedicao">Data da Expedição</label>
+             <div class='input-group date' id='datetimepicker7'>
+                <input type='text' class="form-control" name="atest_reg_data_expedicao"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+         {% endif %}
+         {% if valid_form == False %}
+           {% if 'atest_reg_validade' in invalid_fields %}
+            <div class="form-group col-md-3 has-error has-feedback">
+             <label for="atest_reg_validade">Data de Validade</label>
+             <div class='input-group date' id='datetimepicker8'>
+                <input type='text' class="form-control" name="atest_reg_validade" value="{{ atest_reg_validade }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+           {% else %}
+            <div class="form-group col-md-3">
+             <label for="atest_reg_validade">Data de Validade</label>
+             <div class='input-group date' id='datetimepicker8'>
+                <input type='text' class="form-control" name="atest_reg_validade" value="{{ atest_reg_validade }}"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+           {% endif %}
+         {% else %}
+            <div class="form-group col-md-3">
+             <label for="atest_reg_validade">Data de Validade</label>
+             <div class='input-group date' id='datetimepicker8'>
+                <input type='text' class="form-control" name="atest_reg_validade"/>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+           </div>
+         {% endif %}
         </div>
+        {% if valid_form == False %}
+        <div class="row">
+          <div class="form-group col-md-12">
+           <label for="observacao">Observação</label>
+           <input type="text" class="form-control" name="observacao" value="{{ observacao }}">
+          </div>
+        </div>
+        {% else %}
         <div class="row">
           <div class="form-group col-md-12">
            <label for="observacao">Observação</label>
            <input type="text" class="form-control" name="observacao">
           </div>
         </div>
+        {% endif %}
         <hr />
+        {% if valid_form == False %}
+          <label for="servicos_disponiveis">Serviços Disponíveis</label>
+          <br>
+          <div class="row">
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" name="serv_venda_comb" {{ serv_venda_comb }}>Venda de Combustíveis</label>
+            </div>
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" name="serv_troca_oleo" {{ serv_troca_oleo }}>Troca de Óleo</label>
+            </div>
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" name="serv_lav_veiculos" {{ serv_lav_veiculos }}>Lavagem de Veículos</label>
+            </div>
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" name="serv_ofic_mec" {{ serv_ofic_mec }}>Oficina Mecânica</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" name="serv_lanc_conven" {{ serv_lanc_conven }}>Restaurante/Lanchonete/Loja de Conveniência</label>
+            </div>
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" name="serv_gas_cozinha" {{ serv_gas_cozinha }}>Venda de Gás de Cozinha</label>
+            </div>
+            <div class="form-group col-md-6">
+              <label class="checkbox-inline"><input type="checkbox" name="serv_outros" {{ serv_outros }}>Outros:</label>
+              <input type="text" class="form-control" name="outros_servicos" value="{{ outros_servicos }}">
+            </div>
+          </div>
+        {% else %}
           <label for="servicos_disponiveis">Serviços Disponíveis</label>
           <br>
           <div class="row">
@@ -223,9 +595,24 @@
               <input type="text" class="form-control" name="outros_servicos">
             </div>
           </div>
+        {% endif %}
         <hr />
           <label for="infraestrutura_disponivel">Infraestrutura Disponível</label>
           <br>
+          {% if valid_form == False %}
+          <div class="row">
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="valv_ret_vap" {{ valv_ret_vap }}>Válvula retentora de vapor</label>              
+            </div>
+            <div class="form-group col-md-9">
+                <label for="estado_conservacao_val_ret_vap">Estado de conservação: </label>
+                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Indisponível" {{ radio_val_ret_vap_0 }}>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Bom" {{ radio_val_ret_vap_1 }}>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Regular" {{ radio_val_ret_vap_2 }}>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Precário" {{ radio_val_ret_vap_3 }}>Precário</label>
+            </div>
+          </div>
+          {% else %}
           <div class="row">
             <div class="form-group col-md-3">
               <label class="checkbox-inline"><input type="checkbox" value="True" name="valv_ret_vap">Válvula retentora de vapor</label>              
@@ -238,20 +625,67 @@
                 <label class="radio-inline"><input type="radio" name="radio_val_ret_vap" value="Precário">Precário</label>
             </div>
           </div>
+          {% endif %}
           <div class="row">
+            {% if valid_form == False %}
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="tanq_sub_par_dup_jaq" {{ tanq_sub_par_dup_jaq }}>Tanque subterrâneo parede dupla jaquetado (NBR 13.785 da ABNT)</label>
+            </div>
+            {% else %}
             <div class="form-group col-md-3">
               <label class="checkbox-inline"><input type="checkbox" value="True" name="tanq_sub_par_dup_jaq">Tanque subterrâneo parede dupla jaquetado (NBR 13.785 da ABNT)</label>
             </div>
-            <div class="form-group col-md-6">
-                <label for="tanq_sub_par_dup_jaq_data_inst">Data da instalação: </label>
-                <div class='input-group date' id='datetimepicker9'>
-                    <input type='text' class="form-control" name="tanq_sub_par_dup_jaq_data_inst"/>
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
+            {% endif %}
+            {% if valid_form == False %}
+              {% if 'tanq_sub_par_dup_jaq_data_inst' in invalid_fields %}
+                <div class="form-group col-md-6 has-error has-feedback">
+                    <label for="tanq_sub_par_dup_jaq_data_inst">Data da instalação: </label>
+                    <div class='input-group date' id='datetimepicker9'>
+                        <input type='text' class="form-control" name="tanq_sub_par_dup_jaq_data_inst"/ value="{{ tanq_sub_par_dup_jaq_data_inst }}">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
                 </div>
+              </div>
+              {% else %}
+              <div class="form-group col-md-6">
+                    <label for="tanq_sub_par_dup_jaq_data_inst">Data da instalação: </label>
+                    <div class='input-group date' id='datetimepicker9'>
+                        <input type='text' class="form-control" name="tanq_sub_par_dup_jaq_data_inst"/ value="{{ tanq_sub_par_dup_jaq_data_inst }}">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+              </div>
+              {% endif %}
+            {% else %}
+              <div class="form-group col-md-6">
+                    <label for="tanq_sub_par_dup_jaq_data_inst">Data da instalação: </label>
+                    <div class='input-group date' id='datetimepicker9'>
+                        <input type='text' class="form-control" name="tanq_sub_par_dup_jaq_data_inst"/>
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+              </div>
+            {% endif %}
+          {% if valid_form == False %}
+          <div class="row">           
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="poco_mon" {{ poco_mon }}>Poço de monitoramento</label>
+            </div>
+            <div class="form-group col-md-9">
+                <label for="estado_conservacao_poco_mon">Estado de conservação: </label>
+                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Indisponível" {{ radio_poco_mon_0 }}>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Bom" {{ radio_poco_mon_1 }}>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Regular" {{ radio_poco_mon_2 }}>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Precário" {{ radio_poco_mon_3 }}>Precário</label>
             </div>
           </div>
+          {% else %}
           <div class="row">           
             <div class="form-group col-md-3">
               <label class="checkbox-inline"><input type="checkbox" value="True" name="poco_mon">Poço de monitoramento</label>
@@ -264,6 +698,21 @@
                 <label class="radio-inline"><input type="radio" name="radio_poco_mon" value="Precário">Precário</label>
             </div>
           </div>
+          {% endif %}
+          {% if valid_form == False %}
+          <div class="row">
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="can_ilha_bom" {{ can_ilha_bom }}>Caneletas de ilha de bombas</label>
+            </div>
+            <div class="form-group col-md-9">
+                <label for="estado_conservacao_can_ilha_bom">Estado de conservação: </label>
+                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Indisponível" {{ radio_can_ilha_bom_0 }}>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Bom" {{radio_can_ilha_bom_1 }}>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Regular" {{ radio_can_ilha_bom_2 }}>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Precário" {{ radio_can_ilha_bom_3 }}>Precário</label>
+            </div>
+          </div>
+          {% else %}
           <div class="row">
             <div class="form-group col-md-3">
               <label class="checkbox-inline"><input type="checkbox" value="True" name="can_ilha_bom">Caneletas de ilha de bombas</label>
@@ -276,7 +725,22 @@
                 <label class="radio-inline"><input type="radio" name="radio_can_ilha_bom" value="Precário">Precário</label>
             </div>
           </div>
-          <div class="row">
+          {% endif %}
+          {% if valid_form == False %}
+            <div class="row">
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="can_per" {{ can_per }}>Caneletas de perímetro</label>
+            </div>
+            <div class="form-group col-md-9">
+                <label for="estado_conservacao_can_per">Estado de conservação: </label>
+                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Indisponível" {{ radio_can_per_0 }}>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Bom" {{ radio_can_per_1 }}>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Regular" {{ radio_can_per_2 }}>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_can_per" value="Precário" {{ radio_can_per_3 }}>Precário</label>
+            </div>
+          </div>
+          {% else %}
+            <div class="row">
             <div class="form-group col-md-3">
               <label class="checkbox-inline"><input type="checkbox" value="True" name="can_per">Caneletas de perímetro</label>
             </div>
@@ -288,7 +752,22 @@
                 <label class="radio-inline"><input type="radio" name="radio_can_per" value="Precário">Precário</label>
             </div>
           </div>
-          <div class="row">
+          {% endif %}
+          {% if valid_form == False %}
+            <div class="row">
+            <div class="form-group col-md-3">
+              <label class="checkbox-inline"><input type="checkbox" value="True" name="piso_alisado_bombas" {{ piso_alisado_bombas }}>Piso em concreto alisado na pista de bombas</label>
+            </div>
+            <div class="form-group col-md-9">
+                <label for="estado_conservacao_piso_alisado_bombas">Estado de conservação: </label>
+                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Indisponível" {{ radio_piso_alisado_bombas_0 }}>Indisponível</label>
+                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Bom" {{ radio_piso_alisado_bombas_1 }}>Bom</label>
+                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Regular" {{ radio_piso_alisado_bombas_2 }}>Regular</label>
+                <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Precário" {{ radio_piso_alisado_bombas_3 }}>Precário</label>
+            </div>
+          </div>
+          {% else %}
+            <div class="row">
             <div class="form-group col-md-3">
               <label class="checkbox-inline"><input type="checkbox" value="True" name="piso_alisado_bombas">Piso em concreto alisado na pista de bombas</label>
             </div>
@@ -300,7 +779,22 @@
                 <label class="radio-inline"><input type="radio" name="radio_piso_alisado_bombas" value="Precário">Precário</label>
             </div>
           </div>
-          <div class="row">
+          {% endif %}
+          {% if valid_form == False %}
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label class="checkbox-inline"><input type="checkbox" value="True" name="can_int_sao" {{ can_int_sao }}>Canaletas interligadas ao SAO</label>
+              </div>
+              <div class="form-group col-md-9">
+                  <label for="estado_conservacao_can_int_sao">Estado de conservação: </label>
+                  <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Indisponível" {{ radio_can_int_sao_0 }}>Indisponível</label>
+                  <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Bom" {{ radio_can_int_sao_1 }}>Bom</label>
+                  <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Regular" {{ radio_can_int_sao_2 }}>Regular</label>
+                  <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Precário" {{ radio_can_int_sao_3 }}>Precário</label>
+              </div>
+            </div>
+          {% else %}
+            <div class="row">
             <div class="form-group col-md-3">
               <label class="checkbox-inline"><input type="checkbox" value="True" name="can_int_sao">Canaletas interligadas ao SAO</label>
             </div>
@@ -312,7 +806,22 @@
                 <label class="radio-inline"><input type="radio" name="radio_can_int_sao" value="Precário">Precário</label>
             </div>
           </div>
-          <div class="row">
+          {% endif %}
+          {% if valid_form == False %}
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label class="checkbox-inline"><input type="checkbox" value="True" name="sist_det_vaz" {{ sist_det_vaz }}>Possui sistema de detecção de vazamentos</label>
+              </div>
+              <div class="form-group col-md-9">
+                  <label for="estado_conservacao_sist_det_vaz">Estado de conservação: </label>
+                  <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Indisponível" {{ radio_sist_det_vaz_0 }}>Indisponível</label>
+                  <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Bom" {{ radio_sist_det_vaz_1 }}>Bom</label>
+                  <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Regular" {{ radio_sist_det_vaz_2 }}>Regular</label>
+                  <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Precário" {{ radio_sist_det_vaz_3 }}>Precário</label>
+              </div>
+            </div>
+          {% else %}
+            <div class="row">
             <div class="form-group col-md-3">
               <label class="checkbox-inline"><input type="checkbox" value="True" name="sist_det_vaz">Possui sistema de detecção de vazamentos</label>
             </div>
@@ -324,31 +833,76 @@
                 <label class="radio-inline"><input type="radio" name="radio_sist_det_vaz" value="Precário">Precário</label>
             </div>
           </div>
-          <div class="row">
-            <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="lav_vei_piso_can_sao">Área de lavagem de veículos com piso, canaletas e SAO</label>
+          {% endif %}
+          {% if valid_form == False %}
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label class="checkbox-inline"><input type="checkbox" value="True" name="lav_vei_piso_can_sao" {{ lav_vei_piso_can_sao }}>Área de lavagem de veículos com piso, canaletas e SAO</label>
+              </div>
+              <div class="form-group col-md-9">
+                  <label for="estado_conservacao_lav_vei_piso_can_sao">Estado de conservação: </label>
+                  <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Indisponível" {{ radio_lav_vei_piso_can_sao_0 }}>Indisponível</label>
+                  <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Bom" {{ radio_lav_vei_piso_can_sao_1 }}>Bom</label>
+                  <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Regular" {{ radio_lav_vei_piso_can_sao_2 }}>Regular</label>
+                  <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Precário" {{ radio_lav_vei_piso_can_sao_3 }}>Precário</label>
+              </div>
             </div>
-            <div class="form-group col-md-9">
-                <label for="estado_conservacao_lav_vei_piso_can_sao">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Precário">Precário</label>
+          {% else %}
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label class="checkbox-inline"><input type="checkbox" value="True" name="lav_vei_piso_can_sao">Área de lavagem de veículos com piso, canaletas e SAO</label>
+              </div>
+              <div class="form-group col-md-9">
+                  <label for="estado_conservacao_lav_vei_piso_can_sao">Estado de conservação: </label>
+                  <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Indisponível" checked>Indisponível</label>
+                  <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Bom">Bom</label>
+                  <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Regular">Regular</label>
+                  <label class="radio-inline"><input type="radio" name="radio_lav_vei_piso_can_sao" value="Precário">Precário</label>
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="area_oleo_piso">Área de troca de óleo com piso, canaletas e SAO</label>
+          {% endif %}
+          {% if valid_form == False %}
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label class="checkbox-inline"><input type="checkbox" value="True" name="area_oleo_piso" {{ area_oleo_piso }}>Área de troca de óleo com piso, canaletas e SAO</label>
+              </div>
+              <div class="form-group col-md-9">
+                  <label for="estado_conservacao_area_oleo_piso">Estado de conservação: </label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Indisponível" {{ radio_area_oleo_piso_0 }}>Indisponível</label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Bom" {{ radio_area_oleo_piso_1 }}>Bom</label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Regular" {{ radio_area_oleo_piso_2 }}>Regular</label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Precário" {{ radio_area_oleo_piso_3 }}>Precário</label>
+              </div>
             </div>
-            <div class="form-group col-md-9">
-                <label for="estado_conservacao_area_oleo_piso">Estado de conservação: </label>
-                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Indisponível" checked>Indisponível</label>
-                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Bom">Bom</label>
-                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Regular">Regular</label>
-                <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Precário">Precário</label>
+          {% else %}
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label class="checkbox-inline"><input type="checkbox" value="True" name="area_oleo_piso">Área de troca de óleo com piso, canaletas e SAO</label>
+              </div>
+              <div class="form-group col-md-9">
+                  <label for="estado_conservacao_area_oleo_piso">Estado de conservação: </label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Indisponível" checked>Indisponível</label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Bom">Bom</label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Regular">Regular</label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_oleo_piso" value="Precário">Precário</label>
+              </div>
             </div>
-          </div>
-          <div class="row">
+          {% endif %}
+          {% if valid_form == False %}
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label class="checkbox-inline"><input type="checkbox" value="True" name="area_res_piso" {{ area_res_piso }}>Área de armazenamento de resíduos coberta com piso</label>
+              </div>
+              <div class="form-group col-md-9">
+                  <label for="estado_conservacao_area_oleo_piso">Estado de conservação: </label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Indisponível" {{ radio_area_res_piso_0 }}>Indisponível</label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Bom" {{ radio_area_res_piso_1 }}>Bom</label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Regular" {{ radio_area_res_piso_2 }}>Regular</label>
+                  <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Precário" {{ radio_area_res_piso_3 }}>Precário</label>
+              </div>
+            </div>
+          {% else %}
+            <div class="row">
             <div class="form-group col-md-3">
               <label class="checkbox-inline"><input type="checkbox" value="True" name="area_res_piso">Área de armazenamento de resíduos coberta com piso</label>
             </div>
@@ -360,39 +914,87 @@
                 <label class="radio-inline"><input type="radio" name="radio_area_res_piso" value="Precário">Precário</label>
             </div>
           </div>
-          <div class="row">
-            <div class="form-group col-md-3">
-              <label class="checkbox-inline"><input type="checkbox" value="True" name="at_red_pub_san">Atendido pela rede pública de saneamento</label>
+          {% endif %}
+          {% if valid_form == False %}
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label class="checkbox-inline"><input type="checkbox" value="True" name="at_red_pub_san" {{ at_red_pub_san }}>Atendido pela rede pública de saneamento</label>
+              </div>
             </div>
-          </div>
+          {% else %}
+            <div class="row">
+              <div class="form-group col-md-3">
+                <label class="checkbox-inline"><input type="checkbox" value="True" name="at_red_pub_san">Atendido pela rede pública de saneamento</label>
+              </div>
+            </div>
+          {% endif %}
           <br>
           <br>
+          {% if valid_form == False %}
           <div class="row">
             <div class="form-group col-md-3">
                <label for="quant_tanq_uni_list">Quantidade de tanques (unidade)</label>
             </div>
             <div class="form-group col-md-1">
                 <select class="form-control" name="quant_tanq_uni_select" id="quant_tanq_uni_select">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                  <option>6</option>
-                  <option>7</option>
-                  <option>8</option>
-                  <option>9</option>
-                  <option>10</option>
-                  <option>>10</option>
+                  <option value="1" {{ quant_tanq_uni_select_1 }}>1</option>
+                  <option value="2" {{ quant_tanq_uni_select_2 }}>2</option>
+                  <option value="3" {{ quant_tanq_uni_select_3 }}>3</option>
+                  <option value="4" {{ quant_tanq_uni_select_4 }}>4</option>
+                  <option value="5" {{ quant_tanq_uni_select_5 }}>5</option>
+                  <option value="6" {{ quant_tanq_uni_select_6 }}>6</option>
+                  <option value="7" {{ quant_tanq_uni_select_7 }}>7</option>
+                  <option value="8" {{ quant_tanq_uni_select_8 }}>8</option>
+                  <option value="9" {{ quant_tanq_uni_select_9 }}>9</option>
+                  <option value="10" {{ quant_tanq_uni_select_10 }}>10</option>
                 </select>
              </div>
           </div>
-          <div class="row">       
-           <div class="form-group col-md-4">
-             <label for="cap_tot_arm">Capacidade total de armazenamento (litros)</label>
-             <input type="text" class="form-control" name="cap_tot_arm_txt">
-           </div>
+          {% else %}
+          <div class="row">
+            <div class="form-group col-md-3">
+               <label for="quant_tanq_uni_list">Quantidade de tanques (unidade)</label>
+            </div>
+            <div class="form-group col-md-1">
+                <select class="form-control" name="quant_tanq_uni_select" id="quant_tanq_uni_select">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+             </div>
           </div>
+          {% endif %}
+          {% if valid_form == False %}
+            {% if 'tanq_sub_par_dup_jaq_data_inst' in invalid_fields %}
+              <div class="row">       
+               <div class="form-group col-md-4 has-error has-feedback">
+                 <label for="cap_tot_arm">Capacidade total de armazenamento (litros)</label>
+                 <input type="text" class="form-control" name="cap_tot_arm_txt" value="{{ cap_tot_arm_txt }}">
+               </div>
+              </div>
+            {% else %}
+              <div class="row">       
+               <div class="form-group col-md-4">
+                 <label for="cap_tot_arm">Capacidade total de armazenamento (litros)</label>
+                 <input type="text" class="form-control" name="cap_tot_arm_txt" value="{{ cap_tot_arm_txt }}">
+               </div>
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="row">       
+             <div class="form-group col-md-4">
+               <label for="cap_tot_arm">Capacidade total de armazenamento (litros)</label>
+               <input type="text" class="form-control" name="cap_tot_arm_txt">
+             </div>
+            </div>
+          {% endif %}
         <hr />
         <label for="hist_sin_acid_local">Histórico de sinistros/acidentes no local</label>
           <br>
