@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import PermissoesUsuario, AssinaturaUsuario
 
-# Register your models here.
+admin.site.register(PermissoesUsuario)
+admin.site.register(AssinaturaUsuario)

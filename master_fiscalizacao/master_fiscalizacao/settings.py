@@ -127,3 +127,11 @@ MEDIA_ROOT = os.path.join(PACKAGE_ROOT, "site_media", "media")
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LAUDOS_LIST_PAGE_SIZE = 30
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_PORT = 587

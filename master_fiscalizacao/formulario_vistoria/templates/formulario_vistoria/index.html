@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CRUD com Bootstrap 3</title>
+    <title>Sistema de Vistorias Master</title>
     <link href="{% static 'formulario_vistoria/css/bootstrap.min.css' %}" rel="stylesheet">
     <script src="{% static 'formulario_vistoria/js/jquery.min.js' %}"></script>
     <link href="{% static 'formulario_vistoria/css/fileinput.min.css' %}" media="all" rel="stylesheet" type="text/css" />
@@ -21,13 +21,17 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
        </button>
-       <a class="navbar-brand" href="#">Web Dev Academy</a>
+       <a class="navbar-brand" href="#"><a class="navbar-brand" href="#">Usuário: {{ first_name }} {{ last_name }}</a></a>
       </div>
       <div id="navbar" class="navbar-collapse collapse">
        <ul class="nav navbar-nav navbar-right">
+        {% if permissoes.permissoes_clientes %}
+        <li><a href="{% url 'formulario_vistoria:cadastro_posto' %}">Cadastrar Posto</a></li>
+        {% else %}
         <li><a href="#">Início</a></li>
         <li><a href="#">Opções</a></li>
         <li><a href="#">Perfil</a></li>
+        {% endif %}
         <li><a href="{% url 'user_management:desautenticacao' %}">Sair</a></li>
        </ul>
       </div>
@@ -36,16 +40,27 @@
     <br>
     <br>
     <br>
+    {% if show_empty_data == True %}
+      <div class="row">
+        <div class="alert alert-success">
+          <strong>Laudo armazenado com sucesso!</strong>
+        </div>
+      </div>
+    {% endif %}
     <div id="main" class="container-fluid">
      <div id="top" class="row">
         <div class="col-md-3">
             <h2>Laudos</h2>
         </div>
-     <form action="{% url 'formulario_vistoria:index' %}" method="post">
+     <form action="{% url 'formulario_vistoria:index' pagina=pagina_corrente %}" method="post">
      {% csrf_token %}
         <div class="col-md-6">
             <div class="input-group h2">
-                <input name="data_search" class="form-control" id="search" type="text" placeholder="Pesquisar Laudos">
+                {% if pesquisa_laudo == '' %}
+                  <input name="data_search" class="form-control" id="search" type="text" placeholder="Pesquisar Laudos">
+                {% else %}
+                  <input name="data_search" class="form-control" id="search" type="text" value="{{ pesquisa_laudo }}">
+                {% endif %}
                 <span class="input-group-btn">
                     <button class="btn btn-primary" type="submit">
                         <span class="glyphicon glyphicon-search"></span>
@@ -53,39 +68,37 @@
                 </span>
             </div>
         </div>
-      </form>     
         <div class="col-md-3">
-            <a href="{% url 'formulario_vistoria:preenchimento_vistoria_form' %}" class="btn btn-primary pull-right h2">Novo Laudo</a>
+            {% if permissoes.permissoes_clientes %}
+              <a href="{% url 'formulario_vistoria:solicitacao_vistoria' %}" class="btn btn-primary pull-right h2">Solicitar Vistoria</a>
+            {% endif %}
         </div>
      </div> <!-- /#top -->
  
      <hr />
-     <form action="{% url 'formulario_vistoria:index' %}" method="post">
      <div class="row">
        <div class="form-group col-md-4">
          <label for="nome_posto">Ordenar por:</label>
          <div class="input-group">
           <select class="form-control" name="ordenar_por">
-            <option value="0">Número da Proposta &darr;</option>
-            <option value="1">Número da Proposta &uarr;</option>
-            <option value="2">Razão Social &darr;</option>
-            <option value="3">Razão Social &uarr;</option>
-            <option value="4">Data de Criação &darr;</option>
-            <option value="5">Data de Criação &uarr;</option>
-            <option value="6">Data da Autorização &darr;</option>
-            <option value="7">Data da Autorização &uarr;</option>
-            <option value="8">Status &darr;</option>
-            <option value="9">Status &uarr;</option>
+            <option value="0" {{ ordenacao_0 }}>Número da Proposta &darr;</option>
+            <option value="1" {{ ordenacao_1 }}>Número da Proposta &uarr;</option>
+            <option value="2" {{ ordenacao_2 }}>Razão Social &darr;</option>
+            <option value="3" {{ ordenacao_3 }}>Razão Social &uarr;</option>
+            <option value="4" {{ ordenacao_4 }}>Data de Criação &darr;</option>
+            <option value="5" {{ ordenacao_5 }}>Data de Criação &uarr;</option>
+            <option value="6" {{ ordenacao_6 }}>Data do Parecer &darr;</option>
+            <option value="7" {{ ordenacao_7 }}>Data da Parecer &uarr;</option>
+            <option value="8" {{ ordenacao_8 }}>Status &darr;</option>
+            <option value="9" {{ ordenacao_9 }}>Status &uarr;</option>
           </select>
           <span class="input-group-btn">
-            <button class="btn btn-default" type="button">Ordenar</button>
+            <button class="btn btn-default" type="submit">Ordenar</button>
           </span>
         </div>   
        </div>
       </div>
-     </form>
      <div id="list" class="row">
- 
         <div class="table-responsive col-md-12">
             <table class="table table-striped" cellspacing="0" cellpadding="0">
                 <thead>
@@ -93,7 +106,7 @@
                         <th>Número da Proposta</th>
                         <th>Razão Social</th>
                         <th>Data de Criação</th>
-                        <th>Data da Autorização</th>
+                        <th>Data do Parecer</th>
                         <th>Status</th>
                         <th class="actions">Ações</th>
                      </tr>
@@ -101,9 +114,21 @@
                 <tbody>
                   {% for laudo in laudos %}
                     <tr>
-                        <td>{{ laudo.numero_proposta }}</td>
-                        <td>{{ laudo.posto.nome }}</td>
-                        <td>{{ laudo.data_criacao }}</td>
+                        {% if laudo.status == 3 %}
+                          <td><b>{{ laudo.numero_proposta }}</b></td>
+                        {% else %}
+                          <td>{{ laudo.numero_proposta }}</td>
+                        {% endif %}
+                        {% if laudo.status == 3 %}
+                          <td><b>{{ laudo.posto.nome }}</b></td>
+                        {% else %}
+                          <td>{{ laudo.posto.nome }}</td>
+                        {% endif %}
+                        {% if laudo.status == 3 %}
+                          <td><b>{{ laudo.data_criacao }}</b> </td>
+                        {% else %}
+                          <td>{{ laudo.data_criacao }}</td>
+                        {% endif %}
                         {% if laudo.data_permissao == None %}
                           <td></td>
                         {% else %}
@@ -111,11 +136,31 @@
                         {% endif %}
                         {% if laudo.status == 0 %}
                           <td>AGUARDANDO ANÁLISE</td>
+                        {% elif laudo.status == 1 %}
+                          <td>CONCLUÍDO</td>
+                        {% elif laudo.status == 2 %}
+                          <td>NÃO SUBMETIDO</td>
+                        {% elif laudo.status == 3 %}
+                          <td><b>NOVA SOLICITAÇÃO</b></td>
                         {% endif %}
                         <td class="actions">
-                            <a class="btn btn-success btn-xs" href="{% url 'formulario_vistoria:visualizar_laudo' %}">Visualizar</a>
-                            <a class="btn btn-warning btn-xs" href="edit.html">Editar</a>
-                            <a class="btn btn-danger btn-xs"  href="#" data-toggle="modal" data-target="#delete-modal">Excluir</a>
+                            {% if permissoes.visualizar_formulario or permissoes.emitir_parecer %}
+                              {% if laudo.status != 3 %}
+                                <a class="btn btn-success btn-xs" href="{% url 'formulario_vistoria:visualizar_laudo' laudo_id=laudo.id %}">Visualizar</a>
+                              {% endif %}
+                            {% endif %}
+                            {% if permissoes.preencher_formulario %}
+                              {% if laudo.status == 3 %}
+                                <a class="btn btn-success btn-xs" href="{% url 'formulario_vistoria:preenchimento_formulario_vistoria' laudo_id=laudo.id %}">Preencher</a>
+                              {% else %}
+                                {% if laudo.status != 1 %}
+                                <a class="btn btn-warning btn-xs" href="{% url 'formulario_vistoria:visualizar_editar_laudo' laudo_id=laudo.id %}">Editar</a>
+                                {% endif %}
+                              {% endif %}
+                            {% endif %}
+                            {% if laudo.status == 1 %}
+                                <a class="btn btn-primary btn-xs" href="{% url 'formulario_vistoria:abrir_pdf' laudo=laudo.id %}" download>PDF</a>
+                            {% endif %}
                         </td>
                     </tr>
                   {% endfor %}
@@ -125,42 +170,24 @@
      
          </div>
      </div> <!-- /#list -->
- 
-     <div id="bottom" class="row">
-        <div class="col-md-12">
-             
-            <ul class="pagination">
-                <li class="disabled"><a>&lt; Anterior</a></li>
-                <li class="disabled"><a>1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li class="next"><a href="#" rel="next">Próximo &gt;</a></li>
-            </ul><!-- /.pagination -->
-     
-        </div>
-    </div> <!-- /#bottom -->
+       <div id="bottom" class="row">
+          <div class="col-md-12">             
+              <ul class="pagination">
+                  {% if pagina_anterior != -1 %}
+                      <li class="previous"><a href="/formulario_vistoria/index/{{ pagina_anterior }}">&lt; Anterior</a></li>
+                  {% else %}
+                      <li class="disabled"><a>&lt; Anterior</a></li>
+                  {% endif %}
+                  {% if pagina_posterior != -1 %}
+                      <li class="next"><a href="/formulario_vistoria/index/{{ pagina_posterior }}" rel="next">Próximo &gt;</a></li>
+                  {% else %}
+                      <li class="disabled"><a>Próximo &gt;</a></li>
+                  {% endif %}
+              </ul><!-- /.pagination -->
+          </div>
+      </div> <!-- /#bottom -->
+    </form>
     </div>  <!-- /#main -->
     <script src="{% static 'formulario_vistoria/js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'formulario_vistoria/js/moment.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#foto-upload").fileinput({
-                maxFileSize: 500,
-                previewTemplates: true,
-                uploadUrl: "{% url 'formulario_vistoria:foto_upload' %}"
-            });
-            $('#datetimepicker1').datetimepicker({format: 'YYYY-MM-DD'});
-            $('#datetimepicker2').datetimepicker({format: 'YYYY-MM-DD'});
-            $('#datetimepicker3').datetimepicker({format: 'YYYY-MM-DD'});
-            $('#datetimepicker4').datetimepicker({format: 'YYYY-MM-DD'});
-            $('#datetimepicker5').datetimepicker({format: 'YYYY-MM-DD'});
-            $('#datetimepicker6').datetimepicker({format: 'YYYY-MM-DD'});
-            $('#datetimepicker7').datetimepicker({format: 'YYYY-MM-DD'});
-            $('#datetimepicker8').datetimepicker({format: 'YYYY-MM-DD'});
-            $('#datetimepicker9').datetimepicker({format: 'YYYY-MM-DD'});
-            $('#datetimepicker10').datetimepicker({format: 'YYYY-MM-DD'});
-        });
-    </script>
 </body>
 </html>
